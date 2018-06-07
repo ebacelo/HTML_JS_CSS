@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <title>Cambio de color</title>
+	
+  </head>
+
+  <body>
+    
+	<input type="text" id="txtPalabra" placeholder="Insertar palabra..." value="" />
+	<button id="btn" onclick='cambiarColor(document.getElementById("txtPalabra").value, document.getElementById("selColor").value);'>Pulsar</button>
+	<br/>
+	Color: <select id="selColor">
+	  <option value="#ff0000">Rojo</option>
+	  <option value="#00ff00">Verde</option>
+	  <option value="#0000ff">Azul</option>	  
+	</select>
+	<br/>
+    <h1>Cambio de color</h1>
+
+    <h2>Descripción</h2>
+	<p>Esta pequeña aplicación realiza la búsqueda de la palabra seleccionada y la marca cambiándole el color a las apariciones en el texto</p>
+	
+	<h2>Párrafo 1</h2>
+    <p>La jornada</span> de ayer solo puede calificarse de caótica. Solo el primero de los 28 vuelos programados para aterrizar o despegar en el aeropuerto 
+	vigués pudo hacerlo a causa del mal tiempo y de la desconexión del sistema antiniebla. Nunca antes la terminal olívica había perdido tantas 
+	operaciones en un mismo día. La situación en el último mes -Aena apagó el ILS el pasado 7 de mayo- es dramática y el aeródromo se ha quedado 
+	sin 92 vuelos comerciales. Tomando como ejemplo los datos de abril, cuando pasaron por Peinador una media de 115 personas por avión, el número 
+	de afectados ya sobrepasa los 10.000. Otro factor a tener en cuenta es que históricamente mayo y junio son meses con más demanda, por lo que la 
+	cifra de damnificados posiblemente alcance los 12.000.</p>
+
+    <h2>Párrafo 2</h2>
+    <p>El anticiclón de las Azores, que es el que determina el tiempo en Galicia, Portugal y el norte de España, está todavía situado en latitudes 
+	más bajas de lo habitual y por tanto deja vía libre a las borrascas que se aproximan a la península desde Islandia. Esa es la razón de que el mes 
+	de junio haya comenzado prácticamente igual que finalizó mayo, marcado por la inestabilidad y con temperaturas hasta diez grados por debajo de 
+	lo habitual en este periodo del año. Por lo tanto, todo parece indicar que el conocido refrán de "hasta el 40 de mayo no te quites el sayo" no 
+	se cumplirá este año, ya que para este sábado, 9 de junio (y "40 de mayo") se esperan chubascos y máximas aún por debajo de los 20 grados. No 
+	obstante, no se trata de algo excepcional, ya que en los últimos diez años tan solo hubo uno, el de 2011, en el que no se registraron lluvias 
+	en la primera semana de junio. Todos los demás estuvieron marcados por la inestabilidad primaveral, con periodos de tiempo seco intercalados con 
+	lluvias y temperaturas más frescas en la primera quincena que en la segunda parte del mes. Sólo se rompió la tendencia en 2013, con tres semanas 
+	consecutivas de bajas temperaturas y lluvias y también se describió como lluvioso el precedente, en 2012.</p>
+
+    <h2>Párrafo 3</h2>
+    <p>El famoso director de cine James Cameron, creador de películas icónicas como Titanic, Aliens o Terminator, ha elegido un buque construido 
+	en el astillero vigués Freire Shipyard para llevar a cabo sus próximas filmaciones. Junto a Ray y Mark Dalio y una coalición internacional de 
+	socios de medios, ciencia o filantropía, Cameron anunció el lanzamiento del proyecto OceanX, una iniciativa "para explorar el océano y traerlo 
+	de vuelta al mundo" a través de grandes producciones. Para ello, ha anunciado la remodelación el buque de investigación Volstad Surveyor</p>
+
+	<script src="jsChangeTextColor.js" ></script>
+
+  </body>
+
+</html>
