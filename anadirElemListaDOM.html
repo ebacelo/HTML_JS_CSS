@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <title>Añadir contenido HTML dinámicamente</title>
+	<style>
+	  .dcha {
+	    width: 50%;
+		float: right;
+		background-color: #ccaaaa;
+	  }
+	  .izda {
+		width: 50%;
+		float: left;
+		background-color: #aaaacc;
+	  }
+	  .cuadrado {
+		width: 50px;
+		height: 50px;
+		float: left;
+		display: inline-block;
+		background-color: red;
+	  }
+	  .contenedor_cuadrados {
+	    background-color: #ddeefa;
+		height: 200px;
+	  }
+	</style>
+  </head>
+
+  <body>
+    <div class="izda">
+		<button id="btn" onclick='anadirElementoLista("Último elemento");'>Añadir elemento</button>
+		<button id="btn" onclick='eliminarUltimoElementoLista();'>Eliminar último elemento</button>
+		<div>
+		  <h3>Lista elementos</h3>
+		  <ul id="lista">
+		  
+		  </ul>
+		</div>
+	</div>
+	<div id="cuadrados" class="contenedor_cuadrados dcha">
+	  
+	</div>
+	
+	<script>
+	  function anadirElementoLista(textoElemento) {
+	    var lista = document.getElementById("lista");
+		var li = document.createElement("li");
+		var liTexto = document.createTextNode(textoElemento);
+		li.appendChild(liTexto);
+		lista.appendChild(li);
+		
+		var cuadrados = document.getElementById("cuadrados");
+		var cuadrado = document.createElement("div");
+		cuadrado.style.width = "50px";
+		cuadrado.style.height = "50px";
+		
+		if (cuadrados.childNodes.length % 2 == 0)
+			cuadrado.style.backgroundColor = "red";
+		else
+			cuadrado.style.backgroundColor = "green";
+			
+		cuadrado.style.display = "inline-block";
+		cuadrados.appendChild(cuadrado);
+	  }
+	  
+	  function eliminarUltimoElementoLista() {
+	    var lista = document.getElementById("lista");
+		var listaCuadrados = document.getElementById("cuadrados");
+		
+		if (lista.hasChildNodes()) {
+		  lista.removeChild(lista.childNodes[lista.childNodes.length-1]);
+		}
+		if (listaCuadrados.hasChildNodes()) {
+		  listaCuadrados.removeChild(listaCuadrados.childNodes[listaCuadrados.childNodes.length-1]);
+		}
+	  }
+	</script>
+  </body>
+</html>
