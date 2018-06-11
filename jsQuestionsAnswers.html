@@ -5,6 +5,7 @@
     <meta charset="utf-8">
     <title>Cambio de color</title>
 	<script>
+	//Array con la batería de preguntas con sus correspondientes respuestas
 	var preguntas = [
 	  {
 	  enunciado: "¿Cuánto es 6 + 4?",
@@ -28,29 +29,48 @@
 	  }
 	]
 	
+	/*
+	 * Función que se ocupa de mostrar todas las preguntas de la lista anterior,
+	 * así como un botón que permita visualizar la respuesta cuando se pulse.
+	*/
 	function mostrarPreguntas() {
 	  var contenedor = document.getElementById("contenido");
 	  var i = 0;
 	  
+	  //Recorrer el array de preguntas
 	  for (i = 0; i < preguntas.length; i++) {
+	    //Crear elemento para mostrar cada una de las preguntas
 	    var elPregunta = document.createElement("h3");
-		var elTextoPregunta = document.createTextNode(preguntas[i].enunciado);
 		
+		//Añadir texto con el enunciado de la pregunta al elemento creado
+		var elTextoPregunta = document.createTextNode(preguntas[i].enunciado);
 		elPregunta.appendChild(elTextoPregunta);
+		
+		//Añadir el elemento al contenedor
 	    contenedor.appendChild(elPregunta);
 		
+		//Crear botón para realizar las operaciones necesarias para mostrar la respuesta al ser pulsado
 		var elBoton = document.createElement("button");
+		//Incluir el índice en el identificador del botón creado
 		elBoton.id = "boton" + i;
+		
+		//Texto del botón
 		elBoton.textContent = "Muestra respuesta";
+		
 		//Añadir evento click
 		elBoton.addEventListener('click', function() {
+			//Crear elemento para mostrar la respuesta
 			var elRespuesta = document.createElement("span");
+			//Obtener la respuesta del array a través del índice incluido en el identificador del botón
 			var index = this.id.substring(this.id.indexOf("n") + 1);
 			var elTextoRespuesta = document.createTextNode(preguntas[index].respuesta);
-			
 			elRespuesta.appendChild(elTextoRespuesta);
+			
+			//Sustituir el botón por el elemento creado con la respuesta
 			contenedor.replaceChild(elRespuesta, this);
 		  });
+		  
+		//Añadir el botón al contenedor después de la correspondiente pregunta
 		contenedor.appendChild(elBoton);
 	  }
 	}
@@ -59,7 +79,7 @@
 
   <body onload="mostrarPreguntas()">
     <div id="contenido">
-	
+	  <!-- Aquí se añadirán dinámicamente las preguntas, botones y respuestas -->
 	</div>
   </body>
 </html>
