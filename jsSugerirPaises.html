@@ -1,0 +1,107 @@
+<!doctype html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../css/paises.css">
+    <title>Selecciona un país</title>
+	
+	<!-- CSS -->
+	<style type="text/css">
+	.sugerencia {
+	   padding-left: 2px;
+	   padding-right: 2px;
+       list-style: none;	
+	}
+
+	.sugerencia:hover {
+	   background-color: #ADD8E6;
+       cursor: pointer;
+	}
+
+	#sugerencias {
+	   background-color: #F8F8FF;
+	   position: absolute;
+	   left: 200px;
+	}	
+	</style>
+	
+	<!-- Javascript -->
+	<script>
+	
+// Lista de paises
+var listaPaises = [
+  "Afganistán",
+  "Albania",
+  "Argelia",
+  "Alemania",
+  "Andorra",
+  "Angola",
+  "Arabia Saudita",
+  "Argentina",
+  "Armenia",
+  "Aruba",
+  "Australia",
+  "Austria",
+  "Azerbaiyán",
+];
+
+//Asignar la función que controle el evento keypup dentro del elemento input del formulario.
+function iniciar() {
+    var sugerencias = [];
+	var pais = document.getElementById("pais");
+	pais.addEventListener("keyup", function() {
+	  var texto = pais.value;
+	  
+	  if (texto != "") {
+	    sugerencias = sugerir(texto);
+	  }
+
+	  var ulSugerencias = document.getElementById("sugerencias");
+	  //Limpiar contenido
+	  ulSugerencias.innerHTML = "";
+
+	  //Crear un elemento <li> para cada sugerencia y añadirlo al elemento <ul>
+	  for (j = 0; j < sugerencias.length; j++) {
+	    var listEl = document.createElement("li");
+		listEl.className = "sugerencia";
+		//listEl.style.listStyle = "none";
+		var elText = document.createTextNode(sugerencias[j]);
+		listEl.addEventListener("click", function(e) {
+			pais.value = e.target.textContent;
+			ulSugerencias.innerHTML = "";
+		});
+		listEl.appendChild(elText);
+		ulSugerencias.appendChild(listEl);
+	  }
+	});
+}	
+
+//Tareas a realizar cuando se pulsa una tecla dentro del elemento input.
+//Obtener los paises que contienen el texto introducido hasta el momento.
+function sugerir(texto) {
+    var sugerencias = [];
+	var pais = "";
+	
+	//Recorrer la lista de paises disponible
+	for (i = 0; i < listaPaises.length; i++) {
+	  pais = listaPaises[i];
+	  //Obtener los paises que cumplen el criterio
+	  if (pais.contains(texto)) {
+		sugerencias.push(pais);
+	  }
+	}
+	
+	return sugerencias;
+}
+	</script>
+  </head>
+
+  <body onload="iniciar();">
+    <label for="pais">Escribe el nombre de un país</label>
+    <input type="text" id="pais">
+    <div id="sugerencias"></div>
+		<ul  id="sugerencia" class="sugerencia"></ul>
+  </body>
+
+</html>
