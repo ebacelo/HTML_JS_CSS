@@ -1,0 +1,124 @@
+<!doctype html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="../css/paises.css">
+    <title>Selecciona un país</title>
+	
+	<!-- CSS -->
+	<style type="text/css">
+	.sugerencia {
+	   padding-left: 2px;
+	   padding-right: 2px;
+       list-style: none;	
+	}
+
+	.sugerencia:hover {
+	   background-color: #ADD8E6;
+       cursor: pointer;
+	}
+
+	#sugerencias {
+	   background-color: #F8F8FF;
+	   position: absolute;
+	   left: 200px;
+	}	
+	</style>
+	
+	<!-- Javascript -->
+	<script>
+
+var urlListaPaises = "https://my-json-server.typicode.com/ebacelo/JSONPlaceholder/paises";
+
+//Variable global a rellenar con los datos obtenidos del servidor
+var listaPaises = [];
+
+//Función a ejecutar cuando se recibe respuesta a una petición HTTP mediante AJAX.
+function callback(respuesta) {	
+	listaPaises = JSON.parse(respuesta);
+}
+
+//Función que permite realizar una petición HTTP AJAX a un servidor
+//y ejecutar una función al recibir la respuesta a dicha petición.
+function ajaxGet(url, callback) {
+  var req = new XMLHttpRequest();
+  req.open("GET", url, true);
+  req.addEventListener("load", function() {
+    if (req.status >= 200 && req.status < 400) {
+      // Llamada ala función callback pasándole la respuesta
+      callback(req.responseText);
+    } else {
+      console.error(req.status + " " + req.statusText);
+    }
+  });
+  req.addEventListener("error", function(){
+    console.error("Error de red");
+  });
+  req.send(null);
+}
+
+//Asignar la función que controle el evento keypup dentro del elemento input del formulario.
+function iniciar() {
+    var sugerencias = [];
+	var pais = document.getElementById("pais");
+	
+	//Obtener la lista de paises del servidor (simulado mediante JSONPlaceholder)
+	ajaxGet(urlListaPaises, callback);
+	
+	//Cada vez que se pulse una tecla en el elemento input con el identificador "pais"
+	pais.addEventListener("keyup", function() {
+	  var texto = pais.value;
+	  
+	  if (texto != "") {
+	    sugerencias = sugerir(texto);
+	  }
+
+	  var ulSugerencias = document.getElementById("sugerencias");
+	  //Limpiar contenido
+	  ulSugerencias.innerHTML = "";
+
+	  //Crear un elemento <li> para cada sugerencia y añadirlo al elemento <ul>
+	  for (j = 0; j < sugerencias.length; j++) {
+	    var listEl = document.createElement("li");
+		listEl.className = "sugerencia";
+		//listEl.style.listStyle = "none";
+		var elText = document.createTextNode(sugerencias[j]);
+		listEl.addEventListener("click", function(e) {
+			pais.value = e.target.textContent;
+			ulSugerencias.innerHTML = "";
+		});
+		listEl.appendChild(elText);
+		ulSugerencias.appendChild(listEl);
+	  }
+	});
+}	
+
+//Tareas a realizar cuando se pulsa una tecla dentro del elemento input.
+//Obtener los paises que contienen el texto introducido hasta el momento.
+function sugerir(texto) {
+    var sugerencias = [];
+	var pais = "";
+	
+	//Recorrer la lista de paises disponible
+	for (i = 0; i < listaPaises.length; i++) {
+	  pais = listaPaises[i];
+	  //Obtener los paises que cumplen el criterio
+	  if (pais.contains(texto)) {
+		sugerencias.push(pais);
+	  }
+	}
+	
+	return sugerencias;
+}
+	</script>
+  </head>
+
+  <body onload="iniciar();">
+    <label for="pais">Escribe el nombre de un país</label>
+    <input type="text" id="pais">
+    <div id="sugerencias"></div>
+	<ul  id="sugerencia" class="sugerencia"></ul>
+  </body>
+
+</html>
