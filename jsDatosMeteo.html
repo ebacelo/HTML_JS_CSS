@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <title>Info meteorológica</title>
+	
+	<style>
+	.temp {
+		color: blue;
+		font-style: bold;
+		font-size: 1.2em;
+	}
+	</style>
+	
+	<script>
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////  TODO  /////////////////////////////////////////////////////////
+//	- Añadir opción que permita visualizar la previsión para los próximos días
+//	- Utilizar bootstrap para dar estilo y hacer la página sensible al tamaño del dispositivo
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+function ajaxGet(url, callback) {
+  var req = new XMLHttpRequest();
+  req.open("GET", url, true);
+  console.log("url: " + url);
+  
+  req.addEventListener("load", function() {
+    console.log("status: " + req.status);
+    if (req.status >= 200 && req.status < 400) {
+      // Llamada ala función callback pasándole la respuesta
+      callback(req.responseText);
+    } else {
+      console.error(req.status + " " + req.statusText);
+    }
+  });
+  req.addEventListener("error", function(){
+    console.error("Error de red");
+  });
+  req.send(null);
+}
+
+function iniciar() {
+  var btnBuscar = document.getElementById("btnBuscar");
+  var txtCiudad = document.getElementById("txtCiudad");
+  
+  btnBuscar.addEventListener("click", function(e) {
+    var urlQuery = "http://api.openweathermap.org/data/2.5/find?q=" + txtCiudad.value + "&units=metric&lang=es&appid=25e957d43c543da47e4a1e2d052b4ef0";
+	console.log("url: " + urlQuery);
+    ajaxGet(urlQuery, callback);
+  });
+}
+
+function callback(respuesta) {
+  
+  if (respuesta !== null) {
+		var objRespuesta = JSON.parse(respuesta);
+		
+		if (objRespuesta.list.length > 0) {
+		var imgMeteo = document.getElementById("imgMeteo");
+		var ciudad = document.getElementById("ciudad");
+		var temp = document.getElementById("temp");
+		var urlMeteo = "http://openweathermap.org/img/w/";
+		
+		imgMeteo.setAttribute("src", urlMeteo + objRespuesta.list[0].weather[0].icon + ".png");
+		imgMeteo.height = "150";
+		imgMeteo.width = "150";
+		
+		var txtCiudad = document.createTextNode(objRespuesta.list[0].name);
+		txtCiudad.innerHTML = "";
+		ciudad.innerHTML = "";
+		ciudad.appendChild(txtCiudad);
+		var txtTemp = document.createTextNode(objRespuesta.list[0].main.temp + "º");
+		temp.innerHTML = "";
+		txtTemp.innerHTML = "";
+		txtTemp.cssClass = "temp";
+		temp.appendChild(txtTemp);
+
+		var presion = document.getElementById("presion");
+		var txtPresion = document.createTextNode(objRespuesta.list[0].main.pressure + "mb");
+		presion.innerHTML = "";
+		txtPresion.innerHTML = "";
+		presion.appendChild(txtPresion);
+		
+		var humedad = document.getElementById("humedad");
+		var txtHumedad = document.createTextNode(objRespuesta.list[0].main.humidity + "%");
+		humedad.innerHTML = "";
+		txtHumedad.innerHTML = "";
+		humedad.appendChild(txtHumedad);
+
+		var viento = document.getElementById("viento");
+		var txtViento = document.createTextNode(objRespuesta.list[0].wind.speed + "m/s" + "  (" + objRespuesta.list[0].wind.degree + ")");
+		viento.innerHTML = "";
+		txtViento.innerHTML = "";
+		viento.appendChild(txtViento);
+		
+		var descr = document.getElementById("descr");
+		var txtDescr = document.createTextNode(objRespuesta.list[0].weather[0].description);
+		descr.innerHTML = "";
+		txtDescr.innerHTML = "";
+		descr.appendChild(txtDescr);
+	}
+  }
+}
+
+	</script>
+  </head>	
+
+  <body onload="iniciar();">
+    <div id="buscador">
+		<input type="input" id="txtCiudad" placeholder="Introduzca localidad..." />
+		<input type="button" id="btnBuscar" value="Buscar"></input>
+	  </div>
+	
+	<div id="datosMeteo">
+		
+		<img id="imgMeteo" alt="Qué tiempo hace" />    <!-- http://openweathermap.org/img/w/ + respuestaJSON.list[0].weather[0].icon  -->
+		<div id="infoMeteo" style="display: inline-block; vertical-align: top;" >
+		<h3 id="ciudad"></h3>  <!-- respuestaJSON.list[0].name  -->
+		<p id="temp"></p>    <!-- respuestaJSON.list[0].main.temp  -->
+		<p id="presion"></p>    <!-- respuestaJSON.list[0].main.pressure  -->
+		<p id="humedad"></p>    <!-- respuestaJSON.list[0].main.humidity  -->
+		<p id="viento"></p>    <!-- respuestaJSON.list[0].wind.speed/deg  -->
+		<p id="lluvia"></p>     <!-- respuestaJSON.list[0].rain  -->
+		<p id="nubes"></p>     <!-- respuestaJSON.list[0].clouds.all  -->
+		<p id="descr"></p>      <!-- respuestaJSON.list[0].weather[0].description  -->
+		</div>
+	</div>
+	
+  </body>
+</html>
