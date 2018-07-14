@@ -2,8 +2,9 @@
 <html>
 <!--
 	##################################################  ####################################################
-	Para el correcto funcionamiento de la aplicación es necesario sustituir la cadena YOUR_API_KEY_HERE por
-	la clave de API correspondiente al servicio proporcionado por worldtides.
+	Para el correcto funcionamiento de la aplicación es necesario sustituir la cadena YOUR_API_KEY_HERE y
+    YOUR_API_KEY2_HERE por las claves de API correspondientes al servicio proporcionado por worldtides y 
+	openweathermap.
 	##################################################  ####################################################
 -->
   <head>
@@ -73,7 +74,7 @@ function iniciar() {
   var txtCiudad = document.getElementById("txtCiudad");
   
   btnBuscar.addEventListener("click", function(e) {
-    var urlQuery = "http://api.openweathermap.org/data/2.5/find?q=" + txtCiudad.value + "&units=metric&lang=es&appid=25e957d43c543da47e4a1e2d052b4ef0";
+    var urlQuery = "http://api.openweathermap.org/data/2.5/find?q=" + txtCiudad.value + "&units=metric&lang=es&appid=YOUR_API_KEY2_HERE";
 	console.log("url: " + urlQuery);
     ajaxGet(urlQuery, callback);
   });
