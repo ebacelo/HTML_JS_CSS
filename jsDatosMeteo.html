@@ -44,7 +44,7 @@ function iniciar() {
   var txtCiudad = document.getElementById("txtCiudad");
   
   btnBuscar.addEventListener("click", function(e) {
-    var urlQuery = "http://api.openweathermap.org/data/2.5/find?q=" + txtCiudad.value + "&units=metric&lang=es&appid=25e957d43c543da47e4a1e2d052b4ef0";
+    var urlQuery = "http://api.openweathermap.org/data/2.5/find?q=" + txtCiudad.value + "&units=metric&lang=es&appid=YOUR_API_KEY_HERE";
 	console.log("url: " + urlQuery);
     ajaxGet(urlQuery, callback);
   });
@@ -113,16 +113,16 @@ function callback(respuesta) {
 	
 	<div id="datosMeteo">
 		
-		<img id="imgMeteo" alt="Qué tiempo hace" />    <!-- http://openweathermap.org/img/w/ + respuestaJSON.list[0].weather[0].icon  -->
+		<img id="imgMeteo" alt="Qué tiempo hace" />    <!-- http://openweathermap.org/img/w/ + objRespuesta.list[0].weather[0].icon  -->
 		<div id="infoMeteo" style="display: inline-block; vertical-align: top;" >
-		<h3 id="ciudad"></h3>  <!-- respuestaJSON.list[0].name  -->
-		<p id="temp"></p>    <!-- respuestaJSON.list[0].main.temp  -->
-		<p id="presion"></p>    <!-- respuestaJSON.list[0].main.pressure  -->
-		<p id="humedad"></p>    <!-- respuestaJSON.list[0].main.humidity  -->
-		<p id="viento"></p>    <!-- respuestaJSON.list[0].wind.speed/deg  -->
-		<p id="lluvia"></p>     <!-- respuestaJSON.list[0].rain  -->
-		<p id="nubes"></p>     <!-- respuestaJSON.list[0].clouds.all  -->
-		<p id="descr"></p>      <!-- respuestaJSON.list[0].weather[0].description  -->
+		<h3 id="ciudad"></h3>  >
+		<p id="temp"></p>    
+		<p id="presion"></p>    
+		<p id="humedad"></p>    
+		<p id="viento"></p>    
+		<p id="lluvia"></p>     
+		<p id="nubes"></p>     
+		<p id="descr"></p> 
 		</div>
 	</div>
 	
