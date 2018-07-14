@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+<!--
+	##################################################  ####################################################
+	Para el correcto funcionamiento de la aplicación es necesario sustituir la cadena YOUR_API_KEY_HERE por
+	la clave de API correspondiente al servicio proporcionado por worldtides.
+	##################################################  ####################################################
+-->
+  <head>
+    <meta charset="utf-8">
+    <title>Info meteorológica</title>
+	
+	<style>
+	#contenedor {
+		width: 220px;
+		margin: 0 auto;
+		background-color: #eecccc;
+		padding: 13px;
+		border-radius: 6px;
+	}
+	.temp {
+		color: blue;
+		font-style: bold;
+		font-size: 1.2em;
+	}
+	</style>
+	
+	<script>
+	var objRespuesta;
+	var urlMeteo;
+	
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////  TODO  /////////////////////////////////////////////////////////
+//	- Añadir opción que permita visualizar la previsión para los próximos días
+//	- Utilizar bootstrap para dar estilo y hacer la página sensible al tamaño del dispositivo. Modificar
+//    distribución en función del tamaño de la pantalla.
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+/*
+ * Realizar una petición AJAX a un servidor.
+ * Recibe como parámetros la url del recurso a obtener y una función que se ejecutará cuando se
+ * obtenga una respuesta.
+ */
+function ajaxGet(url, callback) {
+alert("url: " + url);
+  var req = new XMLHttpRequest();
+  req.open("GET", url, true);
+  console.log("url: " + url);
+  
+  req.addEventListener("load", function() {
+    console.log("status: " + req.status);
+    if (req.status >= 200 && req.status < 400) {
+      // Llamada ala función callback pasándole la respuesta
+      callback(req.responseText);
+    } else {
+		console.log("No hay información disponible");
+      //console.log(req.status + " " + req.statusText);
+    }
+  });
+  req.addEventListener("error", function(){
+    console.log("Error de red");
+  });
+  req.send(null);
+}
+
+/*
+ * Obtener referencias a los elementos del formulario necesarios para interactuar con
+ * los datos introducidos por el usuario y definir gestor del evento click para el botón
+ * Buscar.
+ */
+function iniciar() {
+  var btnBuscar = document.getElementById("btnBuscar");
+  var txtCiudad = document.getElementById("txtCiudad");
+  
+  btnBuscar.addEventListener("click", function(e) {
+    var urlQuery = "http://api.openweathermap.org/data/2.5/find?q=" + txtCiudad.value + "&units=metric&lang=es&appid=25e957d43c543da47e4a1e2d052b4ef0";
+	console.log("url: " + urlQuery);
+    ajaxGet(urlQuery, callback);
+  });
+}
+
+
+/*
+ * Realizar las acciones necesarias cuando se recibe la respuesta a la primera petición AJAX (openweathermap).
+ */
+function callback(respuesta) {
+  
+  if (respuesta !== null) {
+		objRespuesta = JSON.parse(respuesta);
+		
+	if (objRespuesta.list.length > 0) {
+		var imgMeteo = document.getElementById("imgMeteo");
+		var ciudad = document.getElementById("ciudad");
+		var temp = document.getElementById("temp");
+		urlMeteo = "http://openweathermap.org/img/w/";
+		var latitud, longitud;
+		
+		//Guardamos la longitud y latitud obtenidas para la localidad introducida
+		latitud = objRespuesta.list[0].coord.lat;
+		longitud = objRespuesta.list[0].coord.lon;
+		
+		//Realizamos la petición para obtener la información relativa a las mareas
+		var urlQueryTides = "https://www.worldtides.info/api?extremes&lat=" + latitud + "&lon=" + longitud + "&length=43200&key=YOUR_API_KEY_HERE"
+
+		console.log("url: " + urlQueryTides);
+		ajaxGet(urlQueryTides, callbackTides);		
+	}
+  }
+}
+
+/*
+ * Realizar las operaciones necesarias cuando se recibe la respuesta a la segunda petición AJAX (worldtides).
+ * Mostrar los resultados obtenidos de las 2 peticiones. Si no se obtienen datos de alguna de las peticiones no
+ * se mostrarán resultados.
+ *
+ * TODO: Mostrar resultados meteorológicos aunque no haya resultados de mareas (ciudades interiores).
+ *
+ */
+function callbackTides(respuesta) {
+
+	if (respuesta != null) {
+		var objRespuestaTides = JSON.parse(respuesta);
+		var dateHigh, dateLow;
+		
+		if (objRespuestaTides.extremes.length == 2) {
+			//Comprobar si hay 2 elementos en el array
+			if (objRespuestaTides.extremes[0].type == "High") {
+				dateHigh = objRespuestaTides.extremes[0].date;
+				var dateH = new Date(Date.parse(dateHigh));
+				dateHigh = formatTime(dateH.getHours() + ":" + dateH.getMinutes());
+				console.log("HoraH: " + dateHigh);
+				dateLow = objRespuestaTides.extremes[1].date;
+				var dateL = new Date(Date.parse(dateLow));
+				dateLow = formatTime(dateL.getHours() + ":" + dateL.getMinutes());
+				console.log("HoraL: " + dateLow);
+			}
+			else {
+				dateLow = objRespuestaTides.extremes[0].date;
+				var dateL = new Date(Date.parse(dateLow));
+				dateLow = formatTime(dateL.getHours() + ":" + dateL.getMinutes());
+				dateHigh = objRespuestaTides.extremes[1].date;			
+				var dateH = new Date(Date.parse(dateHigh));
+				dateHigh = formatTime(dateH.getHours() + ":" + dateH.getMinutes());
+			}		
+
+			//Mostramos la información al usuario
+			imgMeteo.setAttribute("src", urlMeteo + objRespuesta.list[0].weather[0].icon + ".png");
+			imgMeteo.height = "150";
+			imgMeteo.width = "150";
+			
+			var txtCiudad = document.createTextNode(objRespuesta.list[0].name);
+			txtCiudad.innerHTML = "";
+			ciudad.innerHTML = "";
+			ciudad.appendChild(txtCiudad);
+			var txtTemp = document.createTextNode(objRespuesta.list[0].main.temp + "º");
+			temp.innerHTML = "";
+			txtTemp.innerHTML = "";
+			txtTemp.cssClass = "temp";
+			temp.appendChild(txtTemp);
+
+			var presion = document.getElementById("presion");
+			var txtPresion = document.createTextNode(objRespuesta.list[0].main.pressure + "mb");
+			presion.innerHTML = "";
+			txtPresion.innerHTML = "";
+			presion.appendChild(txtPresion);
+			
+			var humedad = document.getElementById("humedad");
+			var txtHumedad = document.createTextNode(objRespuesta.list[0].main.humidity + "%");
+			humedad.innerHTML = "";
+			txtHumedad.innerHTML = "";
+			humedad.appendChild(txtHumedad);
+
+			var viento = document.getElementById("viento");
+			var txtViento = document.createTextNode(objRespuesta.list[0].wind.speed + "m/s" + "  (" + objRespuesta.list[0].wind.degree + ")");
+			viento.innerHTML = "";
+			txtViento.innerHTML = "";
+			viento.appendChild(txtViento);
+			
+			var descr = document.getElementById("descr");
+			var txtDescr = document.createTextNode(objRespuesta.list[0].weather[0].description);
+			descr.innerHTML = "";
+			txtDescr.innerHTML = "";
+			descr.appendChild(txtDescr);
+			
+			//Hacer visibles los iconos de las mareas
+			var iconoMareaAlta = document.getElementById("iconHighTide");
+			var iconoMareaBaja = document.getElementById("iconLowTide");
+			
+			iconoMareaAlta.style.display = "inline";
+			iconoMareaBaja.style.display = "inline";
+			
+			var mareaAlta = document.getElementById("mareaAlta");
+			var txtMareaAlta = document.createTextNode(dateHigh);
+			mareaAlta.innerHTML = "";
+			txtMareaAlta.innerHTML = "";
+			mareaAlta.appendChild(txtMareaAlta);
+			
+			var mareaBaja = document.getElementById("mareaBaja");
+			var txtMareaBaja = document.createTextNode(dateLow);
+			mareaBaja.innerHTML = "";
+			txtMareaBaja.innerHTML = "";
+			mareaBaja.appendChild(txtMareaBaja);
+		}
+		else {
+			//No se han obtenido datos sobre las mareas
+			console.log("No se han obtenido datos sobre las mareas");
+		}
+	}
+}
+
+/*
+ * Transformar un formato horario h:mm en hh:mm
+ */
+function formatTime(t) {
+	var hours = t.split(":")[0];
+	var mins = t.split(":")[1];
+	
+	if (parseInt(hours) < 12 && hours.length == 1) {
+		hours = "0" + hours;
+	}
+	if (parseInt(mins) < 10 && mins.length == 1) {
+		mins = "0" + mins;
+	}
+	
+	return hours + ":" + mins;
+}
+	</script>
+  </head>	
+
+  <body onload="iniciar();">
+    <div id="contenedor">
+		<div id="buscador">
+			<input type="input" id="txtCiudad" placeholder="Introduzca localidad..." />
+			<input type="button" id="btnBuscar" value="Buscar"></input>
+		  </div>
+		
+		<div id="datosMeteo">
+			<img id="imgMeteo" alt="Qué tiempo hace" />    <!-- http://openweathermap.org/img/w/ + objRespuesta.list[0].weather[0].icon  -->
+			<div id="infoMeteo" style="display: inline-block; vertical-align: top;" >
+			<h3 id="ciudad"></h3>
+			<p id="temp"></p>    
+			<p id="presion"></p>    
+			<p id="humedad"></p>    
+			<p id="viento"></p>    
+			<p id="lluvia"></p>     
+			<p id="nubes"></p> 
+			<img id="iconHighTide" alt="Icono pleamar" style="display: none; margin-right: 6px;" height="24" src="highTide.png" /><div style="display: inline-block;" id="mareaAlta"></div>
+			<br/>
+			<img id="iconLowTide" alt="Icono bajamar" style="display: none; margin-right: 6px;" height="24" src="lowTide.png" /><div style="display: inline-block;" id="mareaBaja"></div>
+			<p id="descr"></p> 
+			</div>
+		</div>
+	</div>
+  </body>
+</html>
